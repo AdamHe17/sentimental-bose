@@ -5,6 +5,7 @@ var find_sentiment = require('../alchemy');
 
 var happy_songs = 'spotify:user:spotify_germany:playlist:6zQkNlFnpNO5BB0MG9c165';
 var happy_songs_id = '6zQkNlFnpNO5BB0MG9c165'
+var bose_ip = "";
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -118,6 +119,23 @@ router.get('/', function(req, res, next) {
               json: true
             }, function(err, response, body) {
               console.log(body);
+              if (bose_ip) {
+                var bose_url = 'http://' + bose_ip + '/select';
+                request.post({
+                  url: bose_url,
+                  body: {
+                    "ContentItem": {
+                      "source": "SPOTIFY",
+                      "type": "uri",
+                      "location": playlist_uri,
+                      "sourceAccount": "bosehack11"
+                    }
+                  },
+                  json: true
+                }, function(err, response, body) {
+                  console.log(body);
+                });
+              }
               // Play the music
               // Happy Songs : spotify:user:spotify_germany:playlist:6zQkNlFnpNO5BB0MG9c165
               setInterval(function() {
@@ -162,6 +180,11 @@ router.get('/', function(req, res, next) {
     });
   }
   res.render('index');
+});
+
+router.post('/ip', function(req, res, next) {
+  bose_ip = req.body.ip;
+  res.redirect('/');
 });
 
 module.exports = router;
