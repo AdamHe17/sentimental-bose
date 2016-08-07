@@ -37,6 +37,9 @@ a, button {
   font-size: 30px;
   padding: 5px;
 }
+button:hover {
+  cursor: pointer;
+}
 a {
   color: #84bd00;
 }

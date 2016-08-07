@@ -84,6 +84,7 @@ router.get('/', function(req, res, next) {
         }
       }, function(err, response, body) {
         var list_of_uri = [];
+        console.log(list_of_uri);
         JSON.parse(body).items.map(function(track) {
           list_of_uri.push(track.uri);
         })
@@ -156,6 +157,7 @@ router.get('/', function(req, res, next) {
                       } else {
                         new_songs.push(list_of_uri[i]);
                       }
+                      console.log(new_songs[new_songs.length - 1]);
                     }
                     request.put({
                       url: 'https://api.spotify.com/v1/users/' + user_id + '/playlists/' + playlist_id + '/tracks',
@@ -168,7 +170,7 @@ router.get('/', function(req, res, next) {
                       },
                       json: true
                     }, function(err, response, body) {
-                      console.log(body);
+                      console.log(err, body);
                     });
                   });
                 }
