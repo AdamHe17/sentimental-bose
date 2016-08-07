@@ -76,6 +76,7 @@ router.get('/', function(req, res, next) {
         redirect_uri: 'http://sentimental-bose.herokuapp.com/',
       }
     }, function(err, response, body) {
+      console.log(err, body);
       var access_token = JSON.parse(body).access_token;
       request.get({
         url: 'https://api.spotify.com/v1/me/top/tracks',
@@ -84,10 +85,10 @@ router.get('/', function(req, res, next) {
         }
       }, function(err, response, body) {
         var list_of_uri = [];
-        console.log(list_of_uri);
         JSON.parse(body).items.map(function(track) {
           list_of_uri.push(track.uri);
         })
+        console.log(list_of_uri);
         request.get({
           url: 'https://api.spotify.com/v1/me',
           headers: {
@@ -119,9 +120,9 @@ router.get('/', function(req, res, next) {
               },
               json: true
             }, function(err, response, body) {
-              console.log(body);
+              console.log('create playlist', bose_ip, body);
               if (bose_ip) {
-                var bose_url = 'http://' + bose_ip + '/select';
+                var bose_url = 'http://' + bose_ip + ':8090/select';
                 request.post({
                   url: bose_url,
                   body: {
@@ -134,30 +135,42 @@ router.get('/', function(req, res, next) {
                   },
                   json: true
                 }, function(err, response, body) {
-                  console.log(body);
+                  console.log(err, body);
+                  request.post({
+                    url: 'http://' + bose_ip + ':8090/key',
+                    body: {
+                      "key": {
+                        "state": "press",
+                        "sender": "Gabbo",
+                        "value": "PLAY"
+                      },
+                    },
+                    json: true,
+                  }, function(err, response, body) {
+                    console.log(err, body);
+                  });
                 });
               }
               // Play the music
               // Happy Songs : spotify:user:spotify_germany:playlist:6zQkNlFnpNO5BB0MG9c165
               setInterval(function() {
+                console.log('spotify interval', happiness, sadness)
                 if (happiness < 0 && happiness != sadness) {
                   sadness = happiness;
                   var new_songs = [];
                   request.get({
-                    url: 'https://api.spotify.com/v1/users/' + user_id + '/playlists/' + happy_songs_id + '/tracks',
+                    url: 'https://api.spotify.com/v1/users/spotify_germany/playlists/' + happy_songs_id + '/tracks',
                     headers: {
                       Authorization: 'Bearer ' + access_token,
                       'Content-Type': 'application/json'
                     },
                   }, function(err, response, body) {
-                    console.log(JSON.parse(body).items);
                     for (var i = 0; i < list_of_uri.length; i++) {
                       if (i % 4 == 1) {
-                        new_songs.push(JSON.parse(body).items[i].uri)
+                        new_songs.push(JSON.parse(body).items[i].track.uri)
                       } else {
                         new_songs.push(list_of_uri[i]);
                       }
-                      console.log(new_songs[new_songs.length - 1]);
                     }
                     request.put({
                       url: 'https://api.spotify.com/v1/users/' + user_id + '/playlists/' + playlist_id + '/tracks',
