@@ -72,7 +72,7 @@ router.get('/', function(req, res, next) {
         client_secret: '2916e43b6e1841abbbcba05ef03f8c94',
         grant_type: 'authorization_code',
         code: req.query.code,
-        redirect_uri: 'http://8bc9fe0d.ngrok.io',
+        redirect_uri: 'http://sentimental-bose.herokuapp.com/',
       }
     }, function(err, response, body) {
       var access_token = JSON.parse(body).access_token;
@@ -133,7 +133,7 @@ router.get('/', function(req, res, next) {
                   }, function(err, response, body) {
                     console.log(JSON.parse(body).items);
                     for (var i = 0; i < list_of_uri.length; i++) {
-                      if (i % 4 == 0) {
+                      if (i % 4 == 1) {
                         new_songs.push(JSON.parse(body).items[i].uri)
                       } else {
                         new_songs.push(list_of_uri[i]);

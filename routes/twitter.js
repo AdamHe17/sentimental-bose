@@ -7,7 +7,7 @@ router.get('/', function(req, res, next) {
   request.post({
     url: 'https://api.twitter.com/oauth/request_token',
     oauth: {
-      callback: 'http://8bc9fe0d.ngrok.io/',
+      callback: 'http://sentimental-bose.herokuapp.com/',
       consumer_key: 'FMYyRya3fbp1ZpqSHWrrHIqYZ',
       consumer_secret: 'qQ2IrzcbnuMtB9sQ5dnFoNfAoyyBikZSa5LKwrOGcGnH5Ld2hQ',
       version: '1.0'
